@@ -8,13 +8,13 @@ Gem::Specification.new do |spec|
   spec.version       = Laadur::VERSION
   spec.authors       = ["Nikita Nikitin"]
   spec.email         = ["berozzy@gmail.com"]
-  spec.description   = %q{TODO: Write a gem description}
-  spec.summary       = %q{TODO: Write a gem summary}
+  spec.description   = "Helps to simplify workflow"
+  spec.summary       = ""
   spec.homepage      = ""
   spec.license       = "MIT"
 
   spec.files         = `git ls-files`.split($/)
-  spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
+  spec.executables   = ["laadur"] #spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ["lib"]
 

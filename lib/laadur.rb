@@ -1,5 +1,9 @@
 require "laadur/version"
 
 module Laadur
-  # Your code goes here...
+  class CLI
+    def say_hello
+      puts 'This is laadur. Coming in loud and clear. Over.'
+    end
+  end
 end
