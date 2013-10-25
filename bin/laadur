@@ -1,6 +1,4 @@
 #!/usr/bin/env ruby
 
 require 'laadur'
-
-chatter = Laadur::CLI.new
-chatter.say_hello
+Laadur::CLI.new
