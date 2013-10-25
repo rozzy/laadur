@@ -1,33 +1,21 @@
 require "laadur/version"
 require 'optparse'
-require 'pp'
 module Laadur
   class CLI
     def initialize
-      puts 'test'
-      options = {}
-
-      optparse = OptionParser.new do|opts|
-        # TODO: Put command-line options here
-        
-        # This displays the help screen, all programs are
-        # assumed to have this option.
-        opts.on( '-h', '--help', 'Display this screen' ) do
-          puts opts
-          exit
+      o = OptionParser.new do |o|
+        o.banner  = "Available options: "
+        o.on('-o', '--option', String, 'this option does nothing ') do |test|
+          p test.to_s
         end
       end
 
-      # Parse the command-line. Remember there are two forms
-      # of the parse method. The 'parse' method simply parses
-      # ARGV, while the 'parse!' method parses ARGV and removes
-      # any options found there, as well as any parameters for
-      # the options. What's left is the list of files to resize.
-      optparse.parse!
-
-      pp "Options:", options
-      pp "ARGV:", ARGV
-   
+      begin o.parse! ARGV
+      rescue OptionParser::InvalidOption => e
+        puts e
+        puts o
+        exit 1
+      end
     end
   end
 end
