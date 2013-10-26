@@ -15,6 +15,7 @@ module Laadur
       end
 
       sp = Dir.home+'/dev'+@dir
+      p @dir
       p Dir.glob sp+"/*" if Dir.exists? sp
 
       begin o.parse! ARGV
