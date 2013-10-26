@@ -3,17 +3,20 @@ require 'optparse'
 module Laadur
   class CLI
     def initialize
-      sp = Dir.home+'/dev'
-      p Dir.glob sp+"/*" if Dir.exists? sp
+      @dir = ''
       o = OptionParser.new do |o|
         o.banner  = "Available options: "
         o.on('-o', '--option') do
           p "option:"<<ARGV[0].to_s
         end
-        o.on('-s', '--set') do
-          p "set:"<<ARGV[0].to_s
+        o.on('-f', '--folder') do
+          @dir = ARGV[0].to_s
         end
       end
+
+      sp = Dir.home+'/dev'+@dir
+      p Dir.glob sp+"/*" if Dir.exists? sp
+
       begin o.parse! ARGV
       rescue OptionParser::InvalidOption => e
         puts e
