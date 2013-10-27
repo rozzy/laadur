@@ -5,7 +5,7 @@ require 'shell'
 
 module Laadur
   class CLI
-    def initialize      
+    def initialize
       @@HOME = "#{Dir.home}/.laadur"
       Dir.mkdir(File.join(Dir.home, ".laadur"), 0700) if not File.directory? @@HOME
 
@@ -14,6 +14,7 @@ module Laadur
       begin
         error_flag ||= false
         options = {}
+        begin
         OptionParser.new do |opts|
           opts.banner = "Usage: laadur [options]"
           
@@ -38,10 +39,10 @@ module Laadur
           opts.separator ""
 
           opts.on("--target <path>", "specify target folder for copying template files (also see --root)") do |target|
-            puts target
+            puts target 
           end
 
-          opts.on("--root", "point this flag to use target path from root") do |root|
+          opts.on("--root", "point this flag to specify target path from root (pwd by default)") do |root|
             puts root
           end
 
@@ -58,6 +59,9 @@ module Laadur
           puts opts if error_flag or ARGV.size == 0
 
         end.parse!
+        rescue => error
+          puts error.to_s.slice(0,1).capitalize + error.to_s.slice(1..-1)
+        end
       rescue OptionParser::InvalidOption => error
         puts error.to_s
         error_flag = true
