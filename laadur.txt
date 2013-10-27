@@ -1,0 +1,5 @@
+Laadur #{VERSION}
+===
+Documentation: github.com/rozzy/laadur
+Written by Rozzy (github.com/rozzy) for you.
+Thanks for using.

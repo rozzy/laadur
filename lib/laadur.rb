@@ -14,13 +14,27 @@ module Laadur
       begin
         error_flag ||= false
         @use_home = false
+        @parsed_tmpl = false
         @target = @@workpath
         options = {}
         begin
         OptionParser.new do |opts|
           opts.banner = "Usage: laadur [options]"
           
-          opts.on("-v", "--version", "show version") do |v|
+          opts.on("") do 
+            puts ""
+            File.foreach('laadur.txt') do |line|
+              match = line.match /\#\{(.*)\}/
+              line = line.gsub /\#\{(.*)\}/, instance_eval("#{match[1]}") if match
+              puts line
+            end
+          end
+
+          opts.on("--doc", "open github documentation page") do
+            `open https://github.com/rozzy/laadur`
+          end
+
+          opts.on("-v", "--version", "show version") do
             puts Laadur::VERSION
           end
 
@@ -47,6 +61,7 @@ module Laadur
           end
 
           opts.on("--target <path>", "specify target folder for copying template files (also see --home)") do |target|
+            raise "Next time use --target before specifying template." if @parsed_tmpl
             @target = @use_home ? "#{Dir.home}/#{target}" : "#{@@workpath}/#{target}"
             begin
               puts "Trying to set target to #{@target}, but there is no such folder."
@@ -87,7 +102,8 @@ module Laadur
     end
 
     def parse_template template
-      p template
+      @parsed_tmpl = true
+      p @target
     end
 
     def remove_template template
