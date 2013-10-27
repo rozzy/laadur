@@ -21,13 +21,13 @@ module Laadur
         OptionParser.new do |opts|
           opts.banner = "Usage: laadur [options]"
           
-          opts.on("") do 
-            puts ""
+          if ARGV.size == 0
             File.foreach('laadur.txt') do |line|
               match = line.match /\#\{(.*)\}/
               line = line.gsub /\#\{(.*)\}/, instance_eval("#{match[1]}") if match
               puts line
             end
+            puts ""
           end
 
           opts.on("--doc", "open github documentation page") do
@@ -35,7 +35,7 @@ module Laadur
           end
 
           opts.on("-v", "--version", "show version") do
-            puts Laadur::VERSION
+            puts version
           end
 
           opts.on("-h", "--help", "help window") do
@@ -44,15 +44,40 @@ module Laadur
 
           opts.separator ""
 
-          opts.on("-f", "--folder", "print folder path") do
-            puts @@home
-          end
-
-          opts.on("-o", "--open", "open laadur folder with Terminal.app") do
+          opts.on("-o", "--open", "open laadur folder with Finder.app") do
             `open #{@@home}`
           end
 
+          opts.on("--folder", "print folder path") do
+            puts @@home
+          end
+
+          opts.on("--list") do
+            files = Dir.new(@@home).drop(2) 
+            if files.size > 0
+              puts "There #{files.size == 1 ? 'is' : 'are'} #{files.size} #{files.size == 1 ? 'template' : 'templates'}:"
+              last = files.last
+              files.pop
+              files.each do |file|
+                puts "├ #{b file}"
+              end
+              puts "└ #{b last}"
+            else
+              puts "Your laadur folder is empty!"
+            end
+          end
+
           opts.separator ""
+
+          opts.on("-g", "--target <path>", "specify target folder for copying template files (also see --home)") do |target|
+            raise "Next time use --target before specifying template." if @parsed_tmpl
+            @target = @use_home ? "#{Dir.home}/#{target}" : "#{@@workpath}/#{target}"
+            begin
+              puts "Trying to set target to #{@target}, but there is no such folder."
+              Dir.mkdir @target
+              puts "So #{@target} was created."
+            end if not File.directory? @target
+          end
 
           opts.on("--home", "point this flag to specify target path from HOME directory (#{@@workpath} by default)") do
             puts "Using #{Dir.home}/ as root."
@@ -60,17 +85,7 @@ module Laadur
             @use_home = true
           end
 
-          opts.on("--target <path>", "specify target folder for copying template files (also see --home)") do |target|
-            raise "Next time use --target before specifying template." if @parsed_tmpl
-            @target = @use_home ? "#{Dir.home}/#{target}" : "#{@@workpath}/#{target}"
-            begin
-              puts "Trying to set target to #{@target}, but there is no such folder."
-              Dir.mkdir @target
-              puts "#{@target} was created."
-            end if not File.directory? @target
-          end
-
-          opts.on("--prt", "print the path where files will be copied") do
+          opts.on("--prt", "print target path (where files will be copied)") do
             puts "Files will be copied to: #{@target}"
           end
 
@@ -80,7 +95,7 @@ module Laadur
             self.parse_template template
           end
 
-          opts.on("--remove <template>", "remove a certain template") do |template|
+          opts.on("-r", "--remove <template>", "remove a certain template") do |template|
             self.remove_template template
           end
 
@@ -108,9 +123,10 @@ module Laadur
     
     def version; File.read "version"; end
 
+    def b(text) "#{`tput bold`}#{text}#{`tput sgr0`}"; end
+
     def remove_template template
       if self.template? template
-        def b(text) "#{`tput bold`}#{text}#{`tput sgr0`}"; end
         print "You asked to remove template #{b template} (#{@@home}/#{template}). Are you sure? [y/n] "
         begin 
           FileUtils.rm_rf "#{@@home}/#{template}" rescue puts "Something went wrong."
