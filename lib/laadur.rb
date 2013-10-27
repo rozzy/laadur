@@ -15,12 +15,12 @@ module Laadur
         error_flag ||= false
         @use_home = false
         @parsed_tmpl = false
+        @used_target = false
         @target = @@workpath
         options = {}
         begin
         OptionParser.new do |opts|
           opts.banner = "Usage: laadur [options]"
-          
           if ARGV.size == 0
             File.foreach('laadur.txt') do |line|
               match = line.match /\#\{(.*)\}/
@@ -30,29 +30,32 @@ module Laadur
             puts ""
           end
 
-          opts.on("--doc", "open github documentation page") do
-            `open https://github.com/rozzy/laadur`
+          if ARGV.size > 0
+            ARGV.each do |template|
+              puts b "loaded #{template}" if self.template? template
+            end
           end
 
-          opts.on("-v", "--version", "show version") do
+          opts.on_tail("-v", "--version", "show version") do
             puts version
           end
 
-          opts.on("-h", "--help", "help window") do
+          opts.on_tail("-h", "--help", "help window") do
             puts opts
+          end
+
+          opts.on_tail("--docs", "open github documentation page") do
+            `open https://github.com/rozzy/laadur`
           end
 
           opts.separator ""
 
-          opts.on("-o", "--open", "open laadur folder with Finder.app") do
+          opts.on_tail("-o", "--open", "open laadur folder with Finder.app") do
             `open #{@@home}`
           end
 
-          opts.on("--folder", "print folder path") do
-            puts @@home
-          end
-
-          opts.on("--list") do
+          opts.on_tail
+          ("-l", "--list", "list all templates") do
             files = Dir.new(@@home).drop(2) 
             if files.size > 0
               puts "There #{files.size == 1 ? 'is' : 'are'} #{files.size} #{files.size == 1 ? 'template' : 'templates'}:"
@@ -67,33 +70,39 @@ module Laadur
             end
           end
 
+          opts.on_tail("--folder", "print folder path") do
+            puts @@home
+          end
+
           opts.separator ""
 
-          opts.on("-g", "--target <path>", "specify target folder for copying template files (also see --home)") do |target|
-            raise "Next time use --target before specifying template." if @parsed_tmpl
+          opts.on("-t", "--target <path>", "specify target folder for copying template files (also see --home)") do |target|
+            raise "Next time use --target before specifying the template." if @parsed_tmpl
             @target = @use_home ? "#{Dir.home}/#{target}" : "#{@@workpath}/#{target}"
             begin
               puts "Trying to set target to #{@target}, but there is no such folder."
               Dir.mkdir @target
               puts "So #{@target} was created."
+              @used_target = true
             end if not File.directory? @target
           end
 
-          opts.on("--home", "point this flag to specify target path from HOME directory (#{@@workpath} by default)") do
+          opts.on_tail("--home", "use home folder as root for target option (pwd by default)") do
+            raise "Next time use --home before specifying the target." if @used_target
             puts "Using #{Dir.home}/ as root."
             @target = Dir.home
             @use_home = true
           end
 
-          opts.on("--prt", "print target path (where files will be copied)") do
+          opts.on_tail("--prt", "print target path (where files will be copied)") do
             puts "Files will be copied to: #{@target}"
           end
 
           opts.separator ""
 
-          opts.on("-t", "--template <template>", "load template from repository") do |template| 
-            self.parse_template template
-          end
+          #opts.on("load template from repository", "-l", "--load <template>", "you may not specify this flag") do |template| 
+          #  self.parse_template template
+          #end
 
           opts.on("-r", "--remove <template>", "remove a certain template") do |template|
             self.remove_template template
