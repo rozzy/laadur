@@ -19,7 +19,7 @@ module Laadur
         @target = @@workpath
         options = {}
         loaded = []
-        reserved = ['-v', '--version', '-h', '--help', '--docs', '-o', '--open', '-l', '--list', '--folder', '-t', '--target', '--home', '--pwd', '--prt', '-r', '--remove']
+        reserved = ['-s', '--search', '--all', '-v', '--version', '-h', '--help', '--docs', '-o', '--open', '-l', '--list', '--folder', '-t', '--target', '--home', '--pwd', '--prt', '-r', '--remove']
         begin
         OptionParser.new do |opts|
           opts.banner = "Usage: laadur [options]"
@@ -43,13 +43,13 @@ module Laadur
           end
 
           opts.on("-l", "--list", "list all templates") do
-            files = Dir.new(@@home).drop(2) 
+            files = Dir.glob("#{@@home}/*").select {|f| File.directory? f}
             if files.size > 0
               puts "There #{files.size == 1 ? 'is' : 'are'} #{files.size} #{files.size == 1 ? 'template' : 'templates'}:"
-              last = files.last
+              last = Pathname.new(files.last).basename
               files.pop
               files.each do |file|
-                puts "├ #{b file}"
+                puts "├ #{b Pathname.new(file).basename}"
               end
               puts "└ #{b last}"
             else
@@ -93,9 +93,19 @@ module Laadur
 
           opts.separator ""
 
-          #opts.on("load template from repository", "-l", "--load <template>", "you may not specify this flag") do |template| 
-          #  self.parse_template template
-          #end
+          opts.on("-s", "--search <expr>", "search templates with regex") do |expr|
+            puts "searching with #{expr}"
+          end
+
+          opts.on("--all", "load all templates") do
+            puts "loading all"
+          end
+
+          opts.separator ""
+
+          opts.on("load template from repository", "-l", "--load <template>", "you may not specify this flag") do |template| 
+           self.parse_template template
+          end
 
           opts.on("-r", "--remove <template>", "remove a certain template") do |template|
             self.remove_template template
@@ -110,29 +120,23 @@ module Laadur
             puts ""
           end
 
-          if ARGV.size > 0
-            ARGV.each do |template|
-              if template.match /^--|-/
-                if reserved.include? template 
-                  if self.template? template
-                    puts "There is option with name #{b template} and a path #{@@home}/#{b template}."
-                    puts "I think this is option. If you want use it as path, load it like this: /../.laadur/#{b template}. Sorry :-("
-                    puts ""
-                    puts opts
-                    puts ""
-                    next
-                  else next end
-                end
-              end
+          # if ARGV.size > 0
+          #   ARGV.each do |template|
+          #     if template.match /^--|-/ and reserved.include? template
+          #       if self.template? template
+          #         puts "There is option with name #{b template} and a path #{@@home}/#{b template}."
+          #         puts "I think this is option. If you want use it as path, load it like this: /../.laadur/#{b template}. Sorry :-("
+          #         puts ""
+          #         puts opts
+          #         puts ""
+          #       end
+          #       next
+          #     end
 
-              if self.template? template
-                self.parse_template template
-              else
-                puts "There is no such template: #{b template}. I ignore."
-              end
-            end
-          end
-          
+          #     self.parse_template template if self.template? template
+          #   end
+          # end
+
           puts opts if error_flag or ARGV.size == 0
 
         end.parse!
@@ -152,7 +156,8 @@ module Laadur
 
     def parse_template template
       @parsed_tmpl = true
-      puts template
+      FileUtils.cp_r "#{@@home}/#{template}/.", @target
+      puts "#{b template} loaded!"
     end
     
     def version; File.read "version"; end
