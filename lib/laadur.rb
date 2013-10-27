@@ -1,28 +1,47 @@
-require "laadur/version"
+require 'laadur/version'
 require 'optparse'
+
 module Laadur
   class CLI
-    def initialize
-      @dir = ''
-      o = OptionParser.new do |o|
-        o.banner  = "Available options: "
-        o.on('-o', '--option') do
-          p "option:"<<ARGV[0].to_s
-        end
-        o.on('-f', '--folder') do
-          @dir = ARGV[0].to_s
-        end
-      end
+    def initialize      
+      @@HOME = "#{Dir.home}/.laadur"
+      Dir.mkdir(File.join(Dir.home, ".laadur"), 0700) if not File.directory? @@HOME
 
-      sp = Dir.home+'/dev'+@dir
-      p @dir
-      p Dir.glob sp+"/*" if Dir.exists? sp
+      @@WORKPATH = Dir.pwd
+      puts "Your laadur folder is empty.\n\n" if Dir[File.join(@@HOME, '**', '*')].count { |dir| File.directory?(dir) } == 0
+      begin
+        error_flag ||= false
+        options = {}
+        OptionParser.new do |opts|
+          opts.banner = "Usage: laadur [options]"
+          
+          opts.on("-v", "--version", "show version") do |v|
+            puts Laadur::VERSION
+          end
 
-      begin o.parse! ARGV
-      rescue OptionParser::InvalidOption => e
-        puts e
-        puts o
-        exit 1
+          opts.on("-h", "--help", "help window") do
+            puts opts
+          end
+
+          opts.on("-f", "--folder", "print folder path") do
+            puts @@HOME
+          end
+
+          opts.on("-o", "--open", "open laadur folder") do
+            `open #{@@HOME}`
+          end
+
+          opts.on("-t", "--template <template>", "load template from repository") do |template| 
+            p File.directory? "#{@@HOME}/#{template}"
+          end
+
+          puts opts if error_flag or ARGV.size == 0
+
+        end.parse!
+      rescue OptionParser::InvalidOption => error
+        puts error.to_s
+        error_flag = true
+        retry
       end
     end
   end
