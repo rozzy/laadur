@@ -4,7 +4,8 @@
 When you are doing routine work, you may need a tool which will simplify your workflow.  
 So became **laadur**.
 
-Laadur creates a folder in your homepath (/Users/{user}/.laadur) and keeps there your templates.
+Laadur creates a folder in your homepath (/Users/{user}/.laadur) and keeps there your templates.  
+**It works via CLI. So, it can't be required in your project or smth else.**  
 
 ## Using
 Before using, install it:
