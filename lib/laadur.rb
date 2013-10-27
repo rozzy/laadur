@@ -1,6 +1,7 @@
 require 'laadur/version'
 require 'optparse'
 require 'fileutils'
+require 'shell'
 
 module Laadur
   class CLI
@@ -24,13 +25,27 @@ module Laadur
             puts opts
           end
 
+          opts.separator ""
+
           opts.on("-f", "--folder", "print folder path") do
             puts @@HOME
           end
 
-          opts.on("-o", "--open", "open laadur folder") do
+          opts.on("-o", "--open", "open laadur folder with Terminal.app") do
             `open #{@@HOME}`
           end
+
+          opts.separator ""
+
+          opts.on("--target <path>", "specify target folder for copying template files (also see --root)") do |target|
+            puts target
+          end
+
+          opts.on("--root", "point this flag to use target path from root") do |root|
+            puts root
+          end
+
+          opts.separator ""
 
           opts.on("-t", "--template <template>", "load template from repository") do |template| 
             self.parse_template template
@@ -55,7 +70,7 @@ module Laadur
     end
 
     def parse_template template
-      p self.template? template
+      p template
     end
 
     def remove_template template
