@@ -9,7 +9,7 @@ Laadur creates a folder in your homepath (/Users/{user}/.laadur) and keeps there
 ## Using
 Before using, install it:
 ```sh
-gem install laadur`
+gem install laadur
 ```
 
 ### Options
@@ -39,11 +39,11 @@ To create your first template, you can use
 ```sh
 laadur -o
 ```
-which will open your **laadur** folder in terminal.  
+which will open your **laadur** folder with finder.  
 
 Simply create several folders there with some content.
 For example, folders like:
-* laadur
+* .laadur
   * js-files
     * jquery.js
     * jquery.min.js
@@ -65,3 +65,11 @@ For example, folders like:
     * js
       * bootstrap.js
       * bootstrap.min.js
+
+Here you go.  
+Now you can get this templates from wherever you are.
+
+Simply use:
+```
+laadur -l twitter-bootstrap
+```
