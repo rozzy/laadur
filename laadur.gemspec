@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["berozzy@gmail.com"]
   spec.description   = "Helps to simplify workflow"
   spec.summary       = ""
-  spec.homepage      = ""
+  spec.homepage      = "github.com/rozzy/laadur"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files`.split($/)
