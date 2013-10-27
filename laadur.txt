@@ -1,4 +1,4 @@
-Laadur #{VERSION}
+Laadur #{version}
 ===
 Documentation: github.com/rozzy/laadur
 Written by Rozzy (github.com/rozzy) for you.

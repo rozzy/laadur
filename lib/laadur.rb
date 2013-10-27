@@ -105,6 +105,8 @@ module Laadur
       @parsed_tmpl = true
       p @target
     end
+    
+    def version; File.read "version"; end
 
     def remove_template template
       if self.template? template
