@@ -18,44 +18,31 @@ module Laadur
         @used_target = false
         @target = @@workpath
         options = {}
+        loaded = []
+        reserved = ['-v', '--version', '-h', '--help', '--docs', '-o', '--open', '-l', '--list', '--folder', '-t', '--target', '--home', '--pwd', '--prt', '-r', '--remove']
         begin
         OptionParser.new do |opts|
           opts.banner = "Usage: laadur [options]"
-          if ARGV.size == 0
-            File.foreach('laadur.txt') do |line|
-              match = line.match /\#\{(.*)\}/
-              line = line.gsub /\#\{(.*)\}/, instance_eval("#{match[1]}") if match
-              puts line
-            end
-            puts ""
-          end
 
-          if ARGV.size > 0
-            ARGV.each do |template|
-              puts b "loaded #{template}" if self.template? template
-            end
-          end
-
-          opts.on_tail("-v", "--version", "show version") do
+          opts.on("-v", "--version", "show version") do
             puts version
           end
 
-          opts.on_tail("-h", "--help", "help window") do
+          opts.on("-h", "--help", "help window") do
             puts opts
           end
 
-          opts.on_tail("--docs", "open github documentation page") do
+          opts.on("--docs", "open github documentation page") do
             `open https://github.com/rozzy/laadur`
           end
 
           opts.separator ""
 
-          opts.on_tail("-o", "--open", "open laadur folder with Finder.app") do
+          opts.on("-o", "--open", "open laadur folder with Finder.app") do
             `open #{@@home}`
           end
 
-          opts.on_tail
-          ("-l", "--list", "list all templates") do
+          opts.on("-l", "--list", "list all templates") do
             files = Dir.new(@@home).drop(2) 
             if files.size > 0
               puts "There #{files.size == 1 ? 'is' : 'are'} #{files.size} #{files.size == 1 ? 'template' : 'templates'}:"
@@ -70,7 +57,7 @@ module Laadur
             end
           end
 
-          opts.on_tail("--folder", "print folder path") do
+          opts.on("--folder", "print folder path") do
             puts @@home
           end
 
@@ -87,14 +74,20 @@ module Laadur
             end if not File.directory? @target
           end
 
-          opts.on_tail("--home", "use home folder as root for target option (pwd by default)") do
+          opts.on("--home", "use home folder as root for target option (pwd by default)") do
             raise "Next time use --home before specifying the target." if @used_target
             puts "Using #{Dir.home}/ as root."
             @target = Dir.home
             @use_home = true
           end
-
-          opts.on_tail("--prt", "print target path (where files will be copied)") do
+          
+          opts.on("--pwd", "return back home as pwd (useful with multiloading)") do
+            puts "Using #{@@workpath}/ as root."
+            @target = @@workpath
+            @use_home = true
+          end
+          
+          opts.on("--prt", "print target path (where files will be copied)") do
             puts "Files will be copied to: #{@target}"
           end
 
@@ -107,7 +100,39 @@ module Laadur
           opts.on("-r", "--remove <template>", "remove a certain template") do |template|
             self.remove_template template
           end
+          
+          if ARGV.size == 0
+            File.foreach('laadur.txt') do |line|
+              match = line.match /\#\{(.*)\}/
+              line = line.gsub /\#\{(.*)\}/, instance_eval("#{match[1]}") if match
+              puts line
+            end
+            puts ""
+          end
 
+          if ARGV.size > 0
+            ARGV.each do |template|
+              if template.match /^--|-/
+                if reserved.include? template 
+                  if self.template? template
+                    puts "There is option with name #{b template} and a path #{@@home}/#{b template}."
+                    puts "I think this is option. If you want use it as path, load it like this: /../.laadur/#{b template}. Sorry :-("
+                    puts ""
+                    puts opts
+                    puts ""
+                    next
+                  else next end
+                end
+              end
+
+              if self.template? template
+                self.parse_template template
+              else
+                puts "There is no such template: #{b template}. I ignore."
+              end
+            end
+          end
+          
           puts opts if error_flag or ARGV.size == 0
 
         end.parse!
@@ -127,7 +152,7 @@ module Laadur
 
     def parse_template template
       @parsed_tmpl = true
-      p @target
+      puts template
     end
     
     def version; File.read "version"; end
