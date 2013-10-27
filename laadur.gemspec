@@ -2,10 +2,11 @@
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'laadur/version'
+include Laadur
 
 Gem::Specification.new do |spec|
   spec.name          = "laadur"
-  spec.version       = Laadur::VERSION
+  spec.version       = Laadur.VERSION
   spec.authors       = ["Nikita Nikitin"]
   spec.email         = ["berozzy@gmail.com"]
   spec.description   = "Helps to simplify workflow"
