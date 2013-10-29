@@ -30,8 +30,7 @@ module Laadur
     def parse_options
       OptionParser.new do |opts|
           opts.banner = "Usage: laadur [options]"
-
-          opts.on("-v", "--version", "show version") do puts version end
+          opts.on("-x", "xtest") do puts 'test' end
           opts.on("-h", "--help", "help window") do puts opts end
           opts.on("--docs", "open github documentation page") do `open https://github.com/rozzy/laadur` end
 
