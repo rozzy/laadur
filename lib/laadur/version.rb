@@ -1,5 +1,3 @@
 module Laadur
-  def VERSION 
-    File.read "version"
-  end
+  VERSION = '1.0.0'
 end

@@ -6,7 +6,7 @@ include Laadur
 
 Gem::Specification.new do |spec|
   spec.name          = "laadur"
-  spec.version       = Laadur.VERSION
+  spec.version       = Laadur::VERSION
   spec.authors       = ["Nikita Nikitin"]
   spec.email         = ["berozzy@gmail.com"]
   spec.description   = "Helps to simplify workflow"

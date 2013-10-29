@@ -121,8 +121,6 @@ module Laadur
         parse_template Pathname.new(template).basename
       end
     end
-    
-    def version; File.read "version"; end
 
     def b(text) "#{`tput bold`}#{text}#{`tput sgr0`}"; end
 
@@ -143,6 +141,10 @@ module Laadur
         "Documentation: github.com/rozzy/laadur\n" +
         "Written by Rozzy (github.com/rozzy) for you.\n" +
         "Thanks for using.\n"
+    end
+
+    def version
+      Laadur::VERSION
     end
 
     def parse_multiple_args
