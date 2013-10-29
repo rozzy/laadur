@@ -50,8 +50,8 @@ module Laadur
 
           opts.separator ""
 
-          opts.on("-s", "--search <expr>", "search templates with regex") do |expr| puts "searching with #{expr}" end
-          opts.on("--all", "load all templates") do puts "loading all" end
+          opts.on("-s", "--search <expr>", "search templates with regex") do |expr| load_regex expr end
+          opts.on("--all", "load all templates") do load_regex "*" end
 
           opts.separator ""
 
@@ -114,6 +114,13 @@ module Laadur
       FileUtils.cp_r "#{@@home}/#{template}/.", @target
       puts "#{b template} loaded!"
     end
+
+    def load_regex expr
+      l = Dir.glob("#{@@home}/#{expr}").select { |f| self.template? Pathname.new(f).basename }
+      l.each do |template|
+        parse_template Pathname.new(template).basename
+      end
+    end
     
     def version; File.read "version"; end
 
@@ -131,12 +138,13 @@ module Laadur
     end
 
     def print_message
-      File.foreach('laadur.txt') do |line|
-        match = line.match /\#\{(.*)\}/
-        line = line.gsub /\#\{(.*)\}/, instance_eval("#{match[1]}") if match
-        puts line
-      end
-      puts ""
+      puts <<-eos
+        Laadur #{version}
+        ============
+        Documentation: github.com/rozzy/laadur
+        Written by Rozzy (github.com/rozzy) for you.
+        Thanks for using.
+      eos
     end
 
     def parse_multiple_args
