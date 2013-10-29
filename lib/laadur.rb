@@ -12,7 +12,7 @@ module Laadur
       @@workpath = Dir.pwd
       puts "Your laadur folder is empty.\n\n" if Dir[File.join(@@home, '**', '*')].count { |dir| File.directory?(dir) } == 0
       begin
-        error_flag ||= false
+        @error_flag ||= false
         @use_home = false
         @parsed_tmpl = false
         @used_target = false
@@ -21,7 +21,19 @@ module Laadur
         loaded = []
         reserved = ['-s', '--search', '--all', '-v', '--version', '-h', '--help', '--docs', '-o', '--open', '-l', '--list', '--folder', '-t', '--target', '--home', '--pwd', '--prt', '-r', '--remove']
         begin
-        OptionParser.new do |opts|
+        parse_options
+        rescue => error
+          puts error.to_s.slice(0,1).capitalize + error.to_s.slice(1..-1)
+        end
+      rescue OptionParser::InvalidOption => error
+        puts error.to_s
+        @error_flag = true
+        retry
+      end
+    end
+
+    def parse_options
+      OptionParser.new do |opts|
           opts.banner = "Usage: laadur [options]"
 
           opts.on("-v", "--version", "show version") do
@@ -137,17 +149,9 @@ module Laadur
           #   end
           # end
 
-          puts opts if error_flag or ARGV.size == 0
+          puts opts if @error_flag or ARGV.size == 0
 
         end.parse!
-        rescue => error
-          puts error.to_s.slice(0,1).capitalize + error.to_s.slice(1..-1)
-        end
-      rescue OptionParser::InvalidOption => error
-        puts error.to_s
-        error_flag = true
-        retry
-      end
     end
 
     def template? template
