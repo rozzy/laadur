@@ -1,2 +1,4 @@
 v2.0:
-  — collect options -> parse –> run (instead of parse->run in v1.0)
+  * collect options -> parse –> run (instead of parse->run in v1.0)
+  * --combine
+  * --force
