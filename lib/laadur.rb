@@ -19,7 +19,7 @@ module Laadur
         parse_options
         rescue => error
           puts error.to_s.slice(0,1).capitalize + error.to_s.slice(1..-1)
-        end
+        end 
       rescue OptionParser::InvalidOption => error
         puts error.to_s
         @error_flag = true
@@ -144,7 +144,7 @@ module Laadur
     end
 
     def version
-      Laadur::VERSION
+      'test'
     end
 
     def parse_multiple_args
