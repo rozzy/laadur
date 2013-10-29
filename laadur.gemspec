@@ -9,7 +9,7 @@ Gem::Specification.new do |spec|
   spec.version       = Laadur::VERSION
   spec.authors       = ["Nikita Nikitin"]
   spec.email         = ["berozzy@gmail.com"]
-  spec.description   = "Helps to simplify workflow"
+  spec.description   = "Template manager with CLI"
   spec.summary       = ""
   spec.homepage      = "http://github.com/rozzy/laadur"
   spec.license       = "MIT"
