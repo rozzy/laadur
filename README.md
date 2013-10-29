@@ -10,6 +10,7 @@ Laadur creates a folder in your homepath (/Users/{user}/.laadur) and keeps there
 ## Using
 [Installation](#installation)  
 [Managing](#managing)  
+[Search](#search)  
 [Targetting](#targetting)  
 [Multiloading](#multiloading)  
 [Debugging](#debugging)  
