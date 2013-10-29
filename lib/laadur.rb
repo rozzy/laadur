@@ -30,7 +30,7 @@ module Laadur
     def parse_options
       OptionParser.new do |opts|
           opts.banner = "Usage: laadur [options]"
-          opts.on("-x", "xtest") do puts 'test' end
+          opts.on("-v", "--version", "print gem version") do puts Laadur::VERSION end
           opts.on("-h", "--help", "help window") do puts opts end
           opts.on("--docs", "open github documentation page") do `open https://github.com/rozzy/laadur` end
 
@@ -135,15 +135,11 @@ module Laadur
     end
 
     def print_message
-      puts "Laadur #{version}\n"+
+      puts "Laadur #{Laadur::VERSION}\n"+
         "============\n" +
         "Documentation: github.com/rozzy/laadur\n" +
         "Written by Rozzy (github.com/rozzy) for you.\n" +
         "Thanks for using.\n"
-    end
-
-    def version
-      'test'
     end
 
     def parse_multiple_args
