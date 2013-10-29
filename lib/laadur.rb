@@ -138,13 +138,11 @@ module Laadur
     end
 
     def print_message
-      puts <<-eos
-        Laadur #{version}
-        ============
-        Documentation: github.com/rozzy/laadur
-        Written by Rozzy (github.com/rozzy) for you.
-        Thanks for using.
-      eos
+      puts "Laadur #{version}\n"+
+        "============\n" +
+        "Documentation: github.com/rozzy/laadur\n" +
+        "Written by Rozzy (github.com/rozzy) for you.\n" +
+        "Thanks for using.\n"
     end
 
     def parse_multiple_args
