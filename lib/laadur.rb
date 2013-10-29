@@ -12,7 +12,8 @@ module Laadur
       @@workpath = Dir.pwd
       puts "Your laadur folder is empty.\n\n" if Dir[File.join(@@home, '**', '*')].count { |dir| File.directory?(dir) } == 0
       begin
-        @error_flag ||= multiloading = @use_home = @parsed_tmpl = @used_target = false
+        @multiloading = false
+        @error_flag || @use_home = @parsed_tmpl = @used_target = false
         @target, options, loaded = @@workpath, {}, []
         begin
         parse_options
@@ -59,7 +60,7 @@ module Laadur
 
           print_message if ARGV.size == 0
           
-          parse_multiple_args if ARGV.size > 1 and multiloading 
+          parse_multiple_args if ARGV.size > 1 and :multiloading
 
           puts opts if @error_flag or ARGV.size == 0
         end.parse!

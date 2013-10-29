@@ -1,4 +1,4 @@
 #!/usr/bin/env ruby
 
 require 'laadur'
-ch = Laadur::CLI.new
+Laadur::CLI.new
