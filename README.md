@@ -44,6 +44,21 @@ Get laadur folder path: `laadur --folder`.
 Get list of all templates: `laadur --list`.  
 And remove certain template: `laadur -r bootstrap`.   
 
+#### Search
+Laadur can load several templates, using regular expression.
+```sh
+[ ~/blog ]: laadur --list
+There are 4 templates:
+├ jquery
+├ jquery-mobile
+├ sass-mixins
+└ sass-mixins-mobile
+[ ~/blog ]: laadur -s *-mobile
+jquery-mobile loaded!
+sass-mixins-mobile loaded!
+```
+You can also load all templates using `--all`.
+
 #### Targetting
 By default laadur loads files to your pwd.  
 If you wanna change destination folder, use `-t`/`--target`.  
