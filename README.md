@@ -1,5 +1,6 @@
 # laadur (CLI)
-
+[![Gem Version](https://badge.fury.io/rb/laadur.png)](http://badge.fury.io/rb/laadur)[![Code Climate](https://codeclimate.com/github/rozzy/laadur.png)](https://codeclimate.com/github/rozzy/laadur)  
+**[Gem on Rubygems](https://rubygems.org/gems/laadur)**
 ## Intro
 When you are doing routine work, you may need a tool which will simplify your workflow.  
 So became **laadur**.
